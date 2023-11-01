@@ -117,4 +117,5 @@ benchmark bench
     build-depends:    criterion  ^>=1.6.1.0
     hs-source-dirs:   bench
     main-is:          Main.hs
+    cpp-options: -DATCODER
 
