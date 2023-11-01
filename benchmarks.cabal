@@ -1,11 +1,11 @@
 cabal-version:      3.4
-name:               submission
+name:               benchmarks
 version:            0.1.0.0
-synopsis:           A Haskell program submitted to AtCoder
+synopsis:           Benchmark cases under an AtCoder-like environement
 -- description:
-license:            NONE
-author:             submitter-anonymous
-maintainer:         NONE
+license:            MIT
+author:             toyboot4e
+maintainer:         toyboot4e
 -- copyright:
 category:           Competitive
 build-type:         Simple

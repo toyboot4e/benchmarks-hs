@@ -1,4 +1,4 @@
-packages: ./submission.cabal
+packages: ./benchmarks.cabal
 
 constraints: bitvec +libgmp,
              clock +llvm,
