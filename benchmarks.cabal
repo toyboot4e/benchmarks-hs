@@ -118,8 +118,8 @@ benchmark bench
     import:           deps
     type:             exitcode-stdio-1.0
     build-depends:
-        criterion  ^>=1.6.1.0
-      , benchmarks
+        criterion  ^>=1.6.1.0,
+        benchmarks
     hs-source-dirs:   bench
     main-is:          Main.hs
     cpp-options: -DATCODER
