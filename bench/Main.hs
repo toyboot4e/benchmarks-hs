@@ -1,21 +1,38 @@
 import Criterion.Main
+import Data.ByteString.Char8 qualified as BS
+import Data.Char (isSpace)
+import Data.Maybe
+import Data.Vector.Unboxed qualified as U
+import Lib qualified as L
 
 -- Getting started
 -- <http://www.serpentine.com/criterion/tutorial.html>
 
--- The function we're benchmarking.
-fib m | m < 0     = error "negative!"
-      | otherwise = go m
-  where
-    go 0 = 0
-    go 1 = 1
-    go n = go (n-1) + go (n-2)
+ints2 :: BS.ByteString -> ((Int, Int), BS.ByteString)
+ints2 !bs0 =
+  let (!a1, !bs1) = fromJust $ BS.readInt (BS.dropWhile isSpace bs0)
+      (!a2, !bs2) = fromJust $ BS.readInt (BS.dropWhile isSpace bs1)
+   in ((a1, a2), bs2)
 
--- Our benchmark harness.
-main = defaultMain [
-  bgroup "fib" [ bench "1"  $ whnf fib 1
-               , bench "5"  $ whnf fib 5
-               , bench "9"  $ whnf fib 9
-               , bench "11" $ whnf fib 11
-               ]
-  ]
+readInput :: IO ((Int, Int), U.Vector (Int, Int))
+readInput = do
+  -- TODO: read into line instead
+  !bs <- BS.readFile "bench/1_05"
+  let ((!n, !maxW), !bs') = ints2 bs
+  let vws = U.unfoldrExactN n ints2 bs'
+  return ((n, maxW), vws)
+
+main :: IO ()
+main = do
+  ((!n, !w), !input) <- readInput
+  defaultMain
+    [ bgroup
+        "knapsack"
+        [ bench "unboxed-vector" $ whnf (L.knapsackU w) input,
+          bench "boxed-vector" $ whnf (L.knapsackV w) input,
+          bench "list" $ whnf (L.knapsackList w) input,
+          bench "list-mono" $ whnf (L.knapsackListMono w) input
+          -- , bench "9" $ whnf fib 9
+          -- , bench "11" $ whnf fib 11
+        ]
+    ]
