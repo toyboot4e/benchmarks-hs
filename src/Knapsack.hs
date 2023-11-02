@@ -1,3 +1,4 @@
+-- | https://atcoder.jp/contests/dp/tasks/dp_d
 module Knapsack (denseU, denseV, sparseList, sparseIM, sparseU, sparseMonoList, sparseMonoU) where
 
 import Data.Bool (bool)
@@ -5,7 +6,6 @@ import Data.IntMap.Strict qualified as IM
 import Data.Vector qualified as V
 import Data.Vector.Unboxed qualified as U
 
--- | https://atcoder.jp/contests/dp/tasks/dp_d
 denseU :: Int -> U.Vector (Int, Int) -> Int
 denseU maxW = U.maximum . U.foldl' step s0
   where
@@ -25,7 +25,7 @@ denseV maxW = V.maximum . U.foldl' step s0
         f w0 v0 = max v0 $ maybe 0 (dv +) (sofar V.!? (w0 - dw))
 
 sparseList :: Int -> U.Vector (Int, Int) -> Int
-sparseList maxW = maximum . map fst . U.foldl' step s0
+sparseList maxW = maximum . map snd . U.foldl' step s0
   where
     s0 = [(0, 0)] :: [(Int, Int)]
     step wvs (!dw, !dv) =
@@ -47,11 +47,11 @@ sparseIM maxW = maximum . U.foldl' step s0
       IM.unionWith max wvs $ IM.fromList . filter ((<= maxW) . fst) . map (\(!w, !v) -> (w + dw, v + dv)) $ IM.assocs wvs
 
 sparseU :: Int -> U.Vector (Int, Int) -> Int
-sparseU maxW = U.maximum . U.map fst . U.foldl' step s0
+sparseU maxW = U.maximum . U.map snd . U.foldl' step s0
   where
     s0 = U.singleton (0 :: Int, 0 :: Int)
     step wvs (!dw, !dv) =
-      U.unfoldr merge . (,) wvs $ U.filter ((<= maxW) . fst) $ U.map (\(!w, !v) -> (w + dv, v + dw)) wvs
+      U.unfoldr merge . (,) wvs $ U.filter ((<= maxW) . fst) $ U.map (\(!w, !v) -> (w + dw, v + dv)) wvs
 
     merge :: (U.Vector (Int, Int), U.Vector (Int, Int)) -> Maybe ((Int, Int), (U.Vector (Int, Int), U.Vector (Int, Int)))
     merge (!xs, !ys) = case (U.uncons xs, U.uncons ys) of
@@ -64,7 +64,7 @@ sparseU maxW = U.maximum . U.map fst . U.foldl' step s0
         EQ -> Just ((fst x, max (snd x) (snd y)), (xs', ys'))
 
 sparseMonoList :: Int -> U.Vector (Int, Int) -> Int
-sparseMonoList maxW = maximum . map fst . U.foldl' step s0
+sparseMonoList maxW = maximum . map snd . U.foldl' step s0
   where
     s0 = [(0, 0)] :: [(Int, Int)]
     step wvs (!dw, !dv) =
@@ -87,7 +87,7 @@ sparseMonoList maxW = maximum . map fst . U.foldl' step s0
               !maxV' = max (snd x) (snd y) `max` maxV
 
 sparseMonoU :: Int -> U.Vector (Int, Int) -> Int
-sparseMonoU maxW = U.maximum . U.map fst . U.foldl' step s0
+sparseMonoU maxW = U.maximum . U.map snd . U.foldl' step s0
   where
     s0 = U.singleton (0 :: Int, 0 :: Int)
     step wvs (!dw, !dv) =
@@ -115,3 +115,4 @@ sparseMonoU maxW = U.maximum . U.map fst . U.foldl' step s0
             else Just ((fst x, maxV'), (maxV', xs', ys'))
           where
             !maxV' = max (snd x) (snd y) `max` maxV
+
