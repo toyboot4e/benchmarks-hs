@@ -31,10 +31,10 @@ main = do
         [ bench "dense-unboxed-vector" $ whnf (denseU w) input,
           bench "dense-boxed-vector" $ whnf (denseV w) input,
           bench "sparse-list" $ whnf (sparseList w) input,
+          bench "sparse-int-map" $ whnf (sparseIM w) input,
           bench "sparse-unboxed-vector" $ whnf (sparseU w) input,
-          bench "sparse-mono-list" $ whnf (sparseListMono w) input
-          -- , bench "9" $ whnf fib 9
-          -- , bench "11" $ whnf fib 11
+          bench "sparse-mono-list" $ whnf (sparseMonoList w) input,
+          bench "sparse-mono-unboxed-vector" $ whnf (sparseMonoU w) input
         ],
       bgroup "input"
         []
