@@ -3,7 +3,7 @@ import Data.ByteString.Char8 qualified as BS
 import Data.Char (isSpace)
 import Data.Maybe
 import Data.Vector.Unboxed qualified as U
-import Lib qualified as L
+import Knapsack
 
 -- Getting started
 -- <http://www.serpentine.com/criterion/tutorial.html>
@@ -28,11 +28,15 @@ main = do
   defaultMain
     [ bgroup
         "knapsack"
-        [ bench "unboxed-vector" $ whnf (L.knapsackU w) input,
-          bench "boxed-vector" $ whnf (L.knapsackV w) input,
-          bench "list" $ whnf (L.knapsackList w) input,
-          bench "list-mono" $ whnf (L.knapsackListMono w) input
+        [ bench "dense-unboxed-vector" $ whnf (denseU w) input,
+          bench "dense-boxed-vector" $ whnf (denseV w) input,
+          bench "sparse-list" $ whnf (sparseList w) input,
+          bench "sparse-unboxed-vector" $ whnf (sparseU w) input,
+          bench "sparse-mono-list" $ whnf (sparseListMono w) input
           -- , bench "9" $ whnf fib 9
           -- , bench "11" $ whnf fib 11
-        ]
+        ],
+      bgroup "input"
+        []
     ]
+

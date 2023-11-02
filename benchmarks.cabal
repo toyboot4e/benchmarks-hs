@@ -110,8 +110,9 @@ library
   import:          deps
   hs-source-dirs:  src
 
-  -- TODO: auto-generate exposed-modules?
-  exposed-modules: Lib
+  -- cabal-fmt: expand src
+  exposed-modules:
+    Knapsack
 
 -- exposed-modules:
 --     Paths_benchmarks
