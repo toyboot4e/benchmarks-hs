@@ -139,6 +139,7 @@ benchmark bench
   type:           exitcode-stdio-1.0
   build-depends:
     , benchmarks
+    -- , tasty-bench ^>=0.3.4
     , criterion   ^>=1.6.1.0
 
   hs-source-dirs: bench
