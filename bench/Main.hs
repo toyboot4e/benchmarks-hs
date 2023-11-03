@@ -45,9 +45,9 @@ main = do
       bgroup
         "times"
         [ bench "list-iterate" $ whnf (iterList nIter (+ 1)) (0 :: Int),
-          bench "unboxed-vector-iterate" $ whnf (iterU nIter (+ 1)) (0 :: Int)
+          bench "unboxed-vector-iterate" $ whnf (iterU nIter (+ 1)) (0 :: Int),
           bench "bimap-tuple" $ whnf (bimapTuple n (+ 1)) (0 :: Int),
-          bench "rec" $ whnf (iterRec nIter (+ 1)) (0 :: Int),
+          bench "rec" $ whnf (iterRec nIter (+ 1)) (0 :: Int)
         ],
       bgroup
         "forM_"

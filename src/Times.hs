@@ -10,7 +10,7 @@ iterU :: U.Unbox a => Int -> (a -> a) -> a -> a
 iterU n f s0 = U.last $ U.iterateN n f s0
 
 iterRec :: Int -> (a -> a) -> a -> a
-iterRec n f s0 = inner 0 s0
+iterRec n f = inner 0
   where
     inner i !s | i == n = s
     inner x !s = inner (x + 1) $! f s
