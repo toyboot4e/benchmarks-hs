@@ -112,16 +112,24 @@ library
 
   -- cabal-fmt: expand src
   exposed-modules:
+    ForM
     Knapsack
+    Times
 
 -- exposed-modules:
 --     Paths_benchmarks
 
 executable main
-  import:         deps
-  hs-source-dirs: app
-  main-is:        Main.hs
-  build-depends:  benchmarks
+  import:          deps
+  hs-source-dirs:  app
+  main-is:         Main.hs
+  build-depends:   benchmarks
+
+  -- cabal-fmt: expand src
+  exposed-modules:
+    ForM
+    Knapsack
+    Times
 
 -- other-modules:
 --     Paths_benchmarks

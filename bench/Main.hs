@@ -1,9 +1,12 @@
 import Criterion.Main
 import Data.ByteString.Char8 qualified as BS
 import Data.Char (isSpace)
+import Data.IORef
 import Data.Maybe
 import Data.Vector.Unboxed qualified as U
+import ForM
 import Knapsack
+import Times
 
 -- Getting started
 -- <http://www.serpentine.com/criterion/tutorial.html>
@@ -25,6 +28,9 @@ readInput = do
 main :: IO ()
 main = do
   ((!n, !w), !input) <- readInput
+  let nIter = 10_000_000
+  !ref <- newIORef (0 :: Int)
+
   defaultMain
     [ bgroup
         "knapsack"
@@ -36,7 +42,18 @@ main = do
           bench "sparse-mono-list" $ whnf (sparseMonoList w) input,
           bench "sparse-mono-unboxed-vector" $ whnf (sparseMonoU w) input
         ],
-      bgroup "input"
-        []
+      bgroup
+        "times"
+        [ bench "list" $ whnf (iterList nIter (+ 1)) (0 :: Int),
+          bench "rec" $ whnf (iterRec nIter (+ 1)) (0 :: Int),
+          bench "bimapTuple" $ whnf (bimapTuple n (+ 1)) (0 :: Int),
+          bench "unboxed-vector" $ whnf (iterU nIter (+ 1)) (0 :: Int)
+        ],
+      bgroup
+        "forM_"
+        [ bench "listForM_" $ nfIO $ listForM_ 0 (nIter - 1) (writeIORef ref),
+          bench "vecForM_" $ nfIO $ vecForM_ 0 (nIter - 1) (writeIORef ref),
+          bench "streamM_" $ nfIO $ streamM_ 0 (nIter - 1) (writeIORef ref),
+          bench "recM_" $ nfIO $ recM_ 0 (nIter - 1) (writeIORef ref)
+        ]
     ]
-
