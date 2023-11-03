@@ -44,15 +44,15 @@ main = do
         ],
       bgroup
         "times"
-        [ bench "list" $ whnf (iterList nIter (+ 1)) (0 :: Int),
+        [ bench "list-iterate" $ whnf (iterList nIter (+ 1)) (0 :: Int),
+          bench "unboxed-vector-iterate" $ whnf (iterU nIter (+ 1)) (0 :: Int)
+          bench "bimap-tuple" $ whnf (bimapTuple n (+ 1)) (0 :: Int),
           bench "rec" $ whnf (iterRec nIter (+ 1)) (0 :: Int),
-          bench "bimapTuple" $ whnf (bimapTuple n (+ 1)) (0 :: Int),
-          bench "unboxed-vector" $ whnf (iterU nIter (+ 1)) (0 :: Int)
         ],
       bgroup
         "forM_"
-        [ bench "listForM_" $ nfIO $ listForM_ 0 (nIter - 1) (writeIORef ref),
-          bench "vecForM_" $ nfIO $ vecForM_ 0 (nIter - 1) (writeIORef ref),
+        [ bench "list-forM_" $ nfIO $ listForM_ 0 (nIter - 1) (writeIORef ref),
+          bench "vec-forM_" $ nfIO $ vecForM_ 0 (nIter - 1) (writeIORef ref),
           bench "streamM_" $ nfIO $ streamM_ 0 (nIter - 1) (writeIORef ref),
           bench "recM_" $ nfIO $ recM_ 0 (nIter - 1) (writeIORef ref)
         ]
