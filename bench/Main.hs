@@ -34,13 +34,15 @@ main = do
   defaultMain
     [ bgroup
         "knapsack"
-        [ bench "dense-unboxed-vector" $ whnf (denseU w) input,
-          bench "dense-boxed-vector" $ whnf (denseV w) input,
-          bench "sparse-list" $ whnf (sparseList w) input,
-          bench "sparse-int-map" $ whnf (sparseIM w) input,
-          bench "sparse-unboxed-vector" $ whnf (sparseU w) input,
-          bench "sparse-mono-list" $ whnf (sparseMonoList w) input,
-          bench "sparse-mono-unboxed-vector" $ whnf (sparseMonoU w) input
+        [ bench "dense-unboxed-vector" $ (`whnf` input) (\vws -> denseU w vws),
+          bench "dense-boxed-vector" $ (`whnf` input) (\vws -> denseV w vws),
+          bench "sparse-list" $ (`whnf` input) (\vws -> sparseList w vws),
+          bench "sparse-list-forced" $ (`whnf` input) (\vws -> sparseListForced w vws),
+          bench "sparse-int-map" $ (`whnf` input) (\vws -> sparseIM w vws),
+          bench "sparse-int-map-forced" $ (`whnf` input) (\vws -> sparseIMForced w vws),
+          bench "sparse-unboxed-vector" $ (`whnf` input) (\vws -> sparseU w vws),
+          bench "sparse-mono-list" $ (`whnf` input) (\vws -> sparseMonoList w vws),
+          bench "sparse-mono-unboxed-vector" $ (`whnf` input) (\vws -> sparseMonoU w vws)
         ],
       bgroup
         "times"
