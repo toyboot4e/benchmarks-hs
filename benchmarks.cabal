@@ -97,7 +97,6 @@ common deps
     , vector-stream                  ^>=0.1.0.0
     , vector-th-unbox                ^>=0.2.2
     , xhtml                          ^>=3000.2.2.1
-
   if flag(atcoder)
     cpp-options: -DATCODER
 
@@ -116,32 +115,31 @@ library
     Knapsack
     Times
 
--- exposed-modules:
---     Paths_benchmarks
-
 executable main
-  import:          deps
-  hs-source-dirs:  app
-  main-is:         Main.hs
-  build-depends:   benchmarks
+  import:         deps
+  hs-source-dirs: app
+  main-is:        Main.hs
+  build-depends:  benchmarks
 
-  -- cabal-fmt: expand src
-  exposed-modules:
-    ForM
-    Knapsack
-    Times
-
--- other-modules:
---     Paths_benchmarks
+-- test-suite documentation-test
+--   -- import:         deps
+--   type:           exitcode-stdio-1.0
+--   hs-source-dirs: tests
+--   main-is:        Main.hs
+--   build-depends:
+--     , base        ==4.17.1.0
+--     , benchmarks
+--     , doctest     ^>=0.21.1
 
 benchmark bench
   import:         deps
   type:           exitcode-stdio-1.0
-  build-depends:
-    , benchmarks
-    -- , tasty-bench ^>=0.3.4
-    , criterion   ^>=1.6.1.0
-
   hs-source-dirs: bench
   main-is:        Main.hs
   cpp-options:    -DATCODER
+  build-depends:
+    , benchmarks
+    -- , criterion
+    , tasty-bench
+  mixins:
+    tasty-bench (Test.Tasty.Bench as Criterion, Test.Tasty.Bench as Criterion.Main, Test.Tasty.Bench as Gauge, Test.Tasty.Bench as Gauge.Main)

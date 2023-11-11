@@ -6,6 +6,7 @@ import Data.Maybe
 import Data.Vector.Unboxed qualified as U
 import ForM
 import Knapsack
+-- import Test.Tasty.Bench
 import Times
 
 -- Getting started
