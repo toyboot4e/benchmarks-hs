@@ -1,6 +1,19 @@
 -- | https://atcoder.jp/contests/dp/tasks/dp_d
-module Knapsack (denseU, denseV, sparseList, sparseIM, sparseU, sparseMonoList, sparseMonoU) where
 
+module Knapsack
+  ( denseU,
+    denseV,
+    sparseList,
+    sparseListForced,
+    sparseIM,
+    sparseIMForced,
+    sparseU,
+    sparseMonoList,
+    sparseMonoU,
+  )
+where
+
+import Control.DeepSeq
 import Data.Bool (bool)
 import Data.IntMap.Strict qualified as IM
 import Data.Vector qualified as V
@@ -39,12 +52,34 @@ sparseList maxW = maximum . map snd . U.foldl' step s0
       GT -> y : merge xxs ys
       EQ -> (fst x, max (snd x) (snd y)) : merge xs ys
 
+sparseListForced :: Int -> U.Vector (Int, Int) -> Int
+sparseListForced maxW = maximum . map snd . U.foldl' step s0
+  where
+    s0 = [(0, 0)] :: [(Int, Int)]
+    step wvs (!dw, !dv) =
+      force . merge wvs $ filter ((<= maxW) . fst) $ map (\(!w, !v) -> (w + dw, v + dv)) wvs
+
+    merge :: [(Int, Int)] -> [(Int, Int)] -> [(Int, Int)]
+    merge xs [] = xs
+    merge [] xs = xs
+    merge xxs@(!x : xs) yys@(!y : ys) = case compare (fst x) (fst y) of
+      LT -> x : merge xs yys
+      GT -> y : merge xxs ys
+      EQ -> (fst x, max (snd x) (snd y)) : merge xs ys
+
 sparseIM :: Int -> U.Vector (Int, Int) -> Int
 sparseIM maxW = maximum . U.foldl' step s0
   where
     s0 = IM.singleton (0 :: Int) (0 :: Int)
     step wvs (!dw, !dv) =
       IM.unionWith max wvs $ IM.fromList . filter ((<= maxW) . fst) . map (\(!w, !v) -> (w + dw, v + dv)) $ IM.assocs wvs
+
+sparseIMForced :: Int -> U.Vector (Int, Int) -> Int
+sparseIMForced maxW = maximum . U.foldl' step s0
+  where
+    s0 = IM.singleton (0 :: Int) (0 :: Int)
+    step wvs (!dw, !dv) =
+      force . IM.unionWith max wvs $ IM.fromList . filter ((<= maxW) . fst) . map (\(!w, !v) -> (w + dw, v + dv)) $ IM.assocs wvs
 
 sparseU :: Int -> U.Vector (Int, Int) -> Int
 sparseU maxW = U.maximum . U.map snd . U.foldl' step s0
@@ -115,4 +150,3 @@ sparseMonoU maxW = U.maximum . U.map snd . U.foldl' step s0
             else Just ((fst x, maxV'), (maxV', xs', ys'))
           where
             !maxV' = max (snd x) (snd y) `max` maxV
-
