@@ -128,9 +128,7 @@ main = do
   forM_ stats $ \stat -> do
     putStrLn $ showSpeedStat maxNameLen maxBlockCount stat
 
-  putStr $ replicate (maxNameLen + 2) ' '
-  putStrLn scaleDots
-
-  putStr $ replicate (maxNameLen + 2) ' '
-  putStrLn scaleDotNames
+  let pad = replicate (maxNameLen + 2) ' '
+  putStrLn $ pad ++ scaleDots
+  putStrLn $ pad ++ scaleDotNames
 
