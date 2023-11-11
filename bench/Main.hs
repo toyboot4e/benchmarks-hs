@@ -27,32 +27,34 @@ readInput = do
 
 main :: IO ()
 main = do
-  ((!n, !w), !input) <- readInput
-  let nIter = 10_000_000
+  ((!_nItems, !w), !input) <- readInput
+  let nIter = 10 ^ (8 :: Int)
   !ref <- newIORef (0 :: Int)
 
+  -- Maybe prefer non-point-free version for more acculate result
   defaultMain
     [ bgroup
         "knapsack"
-        [ bench "dense-unboxed-vector" $ (`whnf` input) (\vws -> denseU w vws),
-          bench "dense-boxed-vector" $ (`whnf` input) (\vws -> denseV w vws),
-          bench "sparse-list" $ (`whnf` input) (\vws -> sparseList w vws),
-          bench "sparse-list-forced" $ (`whnf` input) (\vws -> sparseListForced w vws),
-          bench "sparse-int-map" $ (`whnf` input) (\vws -> sparseIM w vws),
-          bench "sparse-int-map-forced" $ (`whnf` input) (\vws -> sparseIMForced w vws),
-          bench "sparse-unboxed-vector" $ (`whnf` input) (\vws -> sparseU w vws),
-          bench "sparse-mono-list" $ (`whnf` input) (\vws -> sparseMonoList w vws),
-          bench "sparse-mono-unboxed-vector" $ (`whnf` input) (\vws -> sparseMonoU w vws)
+        [ bench "dense-unboxed-vector" $ whnf (denseU w) input,
+          bench "dense-boxed-vector" $ whnf (denseV w) input,
+          bench "sparse-list" $ whnf (sparseList w) input,
+          bench "sparse-list-forced" $ whnf (sparseListForced w) input,
+          bench "sparse-int-map" $ whnf (sparseIM w) input,
+          bench "sparse-int-map-forced" $ whnf (sparseIMForced w) input,
+          bench "sparse-unboxed-vector" $ whnf (sparseU w) input,
+          bench "sparse-mono-list" $ whnf (sparseMonoList w) input,
+          bench "sparse-mono-unboxed-vector" $ whnf (sparseMonoU w) input
         ],
       bgroup
-        "times"
-        [ bench "list-iterate" $ whnf (iterList nIter (+ 1)) (0 :: Int),
-          bench "unboxed-vector-iterate" $ whnf (iterU nIter (+ 1)) (0 :: Int),
-          bench "bimap-tuple" $ whnf (bimapTuple n (+ 1)) (0 :: Int),
-          bench "rec" $ whnf (iterRec nIter (+ 1)) (0 :: Int)
+        "times(N=10^8)"
+        [ bench "list-iterate" $ whnf (\n -> iterList n (+ 1) (0 :: Int)) nIter,
+          bench "unboxed-vector-iterate" $ whnf (\n -> iterU n (+ 1) (0 :: Int)) nIter,
+          -- FIXME: probably wrong
+          bench "bimap-tuple" $ whnf (\n -> bimapTuple n (+ 1) (0 :: Int)) nIter,
+          bench "rec" $ whnf (\n -> iterRec n (+ 1) (0 :: Int)) nIter
         ],
       bgroup
-        "forM_"
+        "forM_(N=10^8)"
         [ bench "list-forM_" $ nfIO $ listForM_ 0 (nIter - 1) (writeIORef ref),
           bench "vec-forM_" $ nfIO $ vecForM_ 0 (nIter - 1) (writeIORef ref),
           bench "streamM_" $ nfIO $ streamM_ 0 (nIter - 1) (writeIORef ref),
